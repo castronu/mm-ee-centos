@@ -1,6 +1,7 @@
 FROM openshift/jenkins-2-centos7
 
 ARG mm_version="5.9.0"
+ARG user="1001"
 
 USER root
 
@@ -15,5 +16,12 @@ RUN wget https://releases.mattermost.com/$mm_version/mattermost-$mm_version-linu
     tar -xvzf *.gz && \
     mv mattermost /opt
 
+RUN groupadd -g ${user} mattermost
 
-USER 1001
+RUN adduser -D -u ${user} -G mattermost -h /opt/mattermost -D mattermost
+
+USER $user
+
+CMD [ "/opt/mattermost/bin/mattermost" ]
+
+
